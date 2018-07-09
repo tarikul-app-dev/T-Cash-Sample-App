@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/patientmaincontent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#39B54A"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="planet.it.limited.tcashapp.activity.TCashHomeActivity">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_tcash_home"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#39B54A"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            >
+
+
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="0dp"
+                >
+                <ImageView
+                    android:id="@+id/imgv_main_menu"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/trust_logo_icon"
+
+
+                    />
+
+                <TextView
+                    android:id="@+id/txv_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="T-Cash Home"
+                    android:textSize="20dp"
+                    android:textColor="#000000"
+                     android:layout_centerHorizontal="true"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_notification"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="#fff"
+        >
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profile_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_user"
+            android:layout_marginLeft="15dp"
+            app:civ_border_width="2dp"
+            android:layout_marginTop="05dp"
+            app:civ_border_color="#FF000000"
+            android:layout_marginBottom="10dp"
+            />
+        <TextView
+            android:id="@+id/txv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Md. Mustafijur Rahman"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            />
+        <!--<TextView-->
+            <!--android:id="@+id/txv_user_number"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="User Number"-->
+            <!--android:layout_marginLeft="100dp"-->
+            <!--android:layout_marginTop="30dp"-->
+            <!--android:textColor="#000000"-->
+            <!--/>-->
+
+    </RelativeLayout>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="05dp"
+        android:background="#fff"
+        >
+    <GridView
+        android:id="@+id/btn_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="2"
+
+        android:horizontalSpacing="0dp"
+        android:verticalSpacing="0dp"
+        android:layout_marginTop="0dp"
+
+        >
+
+    </GridView>
+    </RelativeLayout>
+
+</LinearLayout>
