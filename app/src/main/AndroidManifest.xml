@@ -17,7 +17,7 @@
         android:roundIcon="@drawable/tcash_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".activity.LoginActivity">
+        <activity android:name=".activity.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +26,8 @@
         </activity>
         <activity android:name=".activity.TCashHomeActivity" />
         <activity android:name=".activity.P2PActivity" />
-        <activity android:name=".activity.StatementActivity"></activity>
+        <activity android:name=".activity.StatementActivity" />
+        <activity android:name=".activity.LoginActivity"></activity>
     </application>
 
 </manifest>

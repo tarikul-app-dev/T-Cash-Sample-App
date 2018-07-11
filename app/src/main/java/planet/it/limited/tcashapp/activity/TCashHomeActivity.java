@@ -1,7 +1,11 @@
 package planet.it.limited.tcashapp.activity;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -13,11 +17,24 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import planet.it.limited.tcashapp.R;
 import planet.it.limited.tcashapp.adapter.ButtonAdapter;
+import planet.it.limited.tcashapp.utill.ConstantAPI;
+
+import static planet.it.limited.tcashapp.utill.SaveValueSharedPreference.getValueFromSharedPreferences;
 
 public class TCashHomeActivity extends AppCompatActivity implements ButtonAdapter.GridViewButtonInterface,NavigationView.OnNavigationItemSelectedListener{
     GridView btnGridView;
@@ -35,6 +52,12 @@ public class TCashHomeActivity extends AppCompatActivity implements ButtonAdapte
     Toolbar toolbar;
     ImageView imgvMainMenu;
     DrawerLayout drawer;
+    Button btnShowBlance;
+    TextView txvShowBalance;
+    String p2pAPI = "";
+    String pinNumber = " ";
+    String userNumber = "";
+    private Dialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +89,11 @@ public class TCashHomeActivity extends AppCompatActivity implements ButtonAdapte
 
         //To use Navigation View
         imgvMainMenu = (ImageView)findViewById(R.id.imgv_main_menu) ;
+        btnShowBlance = (Button)findViewById(R.id.btn_show_blance);
+        txvShowBalance = (TextView) findViewById(R.id.txv_balance);
+        userNumber = getValueFromSharedPreferences("user_number",TCashHomeActivity.this);
+        pinNumber = getValueFromSharedPreferences("pin_number",TCashHomeActivity.this);
+
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -87,6 +115,16 @@ public class TCashHomeActivity extends AppCompatActivity implements ButtonAdapte
                     drawer.openDrawer(Gravity.LEFT);
                 }
 
+            }
+        });
+
+        btnShowBlance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    if(pinNumber!=null && userNumber!=null){
+                        BlanceTask blanceTask = new BlanceTask("TRUSTMM BAL "+pinNumber,userNumber);
+                        blanceTask.execute();
+                    }
             }
         });
 
@@ -173,4 +211,134 @@ public class TCashHomeActivity extends AppCompatActivity implements ButtonAdapte
         return true;
     }
 
+    public class BlanceTask extends AsyncTask<String, Integer, String> {
+        String mMSG;
+        String mGSM;
+        // private Dialog loadingDialog;
+        public BlanceTask (String msg,String gsm){
+            mMSG = msg;
+            mGSM = gsm;
+            p2pAPI = ConstantAPI.p2pAPI + mGSM + "&smstext="+ mMSG + "&telcoid=7&shortCode=03590016201&encKey=122212";
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+           // sendProgress.setVisibility(View.VISIBLE);
+            loadingDialog = ProgressDialog.show(TCashHomeActivity.this, "Please wait", "Loading...");
+            loadingDialog.setCancelable(true);
+
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            OkHttpClient client = new OkHttpClient();
+
+            try {
+
+                Request request = new Request.Builder()
+                        .url(p2pAPI)
+
+                        .build();
+
+                Response response = null;
+
+                //client.setRetryOnConnectionFailure(true);
+                response = client.newCall(request).execute();
+                if (response.isSuccessful()){
+                  // final String result = response.body().string();
+                    final String result = "500.00 tk";
+
+                    // Log.d(RESPONSE_LOG,result);
+
+
+                            //utillDB.saveAllTransaction(sendingNumber,amount,trxID,status);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(result.length()>0){
+                                        loadingDialog.dismiss();
+                                        txvShowBalance.setText(result);
+                                        //openDialog(result);
+
+                                    }
+
+                                }
+                            });
+
+
+
+
+
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        final String result = "500.00";
+                        loadingDialog.dismiss();
+                        txvShowBalance.setText(result);
+                        txvShowBalance.setVisibility(View.VISIBLE);
+                        btnShowBlance.setVisibility(View.GONE);
+                        new Handler().postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // This method will be executed once the timer is over
+                                btnShowBlance.setVisibility(View.VISIBLE);
+                                txvShowBalance.setVisibility(View.GONE);
+
+                            }
+                        },5000);// set time as per your requirement
+                    }
+                });
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+          //  loadingDialog.dismiss();
+
+        }
+
+
+    }
+    public void openDialog(String msgId) {
+        final Dialog dialog = new Dialog(TCashHomeActivity.this); // Context, this, etc.
+        dialog.setContentView(R.layout.custom_dialog);
+        TextView txvResponseMsg = (TextView) dialog.findViewById(R.id.dialog_info);
+        txvResponseMsg.setText("Your Message Sent Success" + " Your Msg Id " + msgId);
+        Button okButton = (Button) dialog.findViewById(R.id.dialog_ok);
+//        Button cancleButton = (Button) dialog.findViewById(R.id.dialog_cancel);
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+//                singleSMSActivity.finish();
+//                Intent intent = new Intent(mContext,SingleSMSActivity.class);
+//                mContext.startActivity(intent);
+//
+//                SingleSMSActivity.txtPhoneNo.setText("");
+//                SingleSMSActivity.edtContentMsg.setText("");
+                dialog.dismiss();
+            }
+        });
+//        cancleButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dialog.dismiss();
+//            }
+//        });
+
+        dialog.show();
+    }
 }

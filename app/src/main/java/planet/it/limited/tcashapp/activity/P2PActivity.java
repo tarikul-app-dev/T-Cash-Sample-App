@@ -53,13 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -128,7 +122,7 @@ public class P2PActivity extends AppCompatActivity {
     int i;
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
-    String sendMoneyAPI = "";
+    String p2pAPI = "";
     ProgressBar sendProgress;
     String userNumber = "";
     String sPinNumber = "";
@@ -137,11 +131,11 @@ public class P2PActivity extends AppCompatActivity {
     String pinNumber = " ";
     String status = "pending";
     InputMethodManager imm;
-    String respReqAPI = "";
+
     String trxID = "";
-    String reqLastRes = "";
-    MyTimerTask myTask;
-    Timer myTimer;
+
+
+
 
 
     @Override
@@ -149,9 +143,6 @@ public class P2PActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_p2_p);
         toolbar = (Toolbar) findViewById(R.id.toolbar_p2p);
-        //saveToSharedPreferences("layout","",P2PActivity.this);
-        //checkLayout = getValueFromSharedPreferences("layout",P2PActivity.this);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -162,37 +153,26 @@ public class P2PActivity extends AppCompatActivity {
 
                         if(checkLayout){
 
-                            //edtSearchInfo.setVisibility(View.VISIBLE);
-                            //lvAllContacts.setVisibility(View.VISIBLE);
-                            //rlLayoutAllContacts.setVisibility(View.VISIBLE);
                             selectedListItem.setVisibility(View.VISIBLE);
                             selectedAmount.setVisibility(View.VISIBLE);
                             rlSendMoneyLayoutF.setVisibility(View.GONE);
                             checkLayout = false;
-
-
                         }
                     }else {
                             Intent intent = new Intent(P2PActivity.this,TCashHomeActivity.class);
                             startActivity(intent);
                 }
 
-
-
-
-
-
             }
         });
 
+
+        initViews();
+    }
+    public void initViews(){
         isReadContacts = getBoleanValueSharedPreferences("is_read", P2PActivity.this);
         contactsDB = new ContactsDB(P2PActivity.this);
         contactsDB.open();
-//        pDialog = new ProgressDialog(P2PActivity.this);
-//        pDialog.setMessage("Reading contacts...");
-//        pDialog.setCancelable(false);
-//        pDialog.show();
-
         lvAllContacts = (ListView) findViewById(R.id.list);
         //lvRecentList = (ListView) findViewById(R.id.recent_list);
         edtSearchInfo = (EditText) findViewById(R.id.edt_search_no);
@@ -201,26 +181,20 @@ public class P2PActivity extends AppCompatActivity {
         rlLayoutAllContacts = (RelativeLayout) findViewById(R.id.rlayout_all_contacts);
         txvName = (TextView) findViewById(R.id.txv_name);
         txvNumber = (TextView) findViewById(R.id.txv_user_number);
-       // recentListLayout = (LinearLayout) findViewById(R.id.layout_recent_list);
-         contactPic = (de.hdodenhof.circleimageview.CircleImageView)findViewById(R.id.select_profile_image);
-         sendMoney = (ImageView)findViewById(R.id.imgv_send_money);
-         imgvSendP2P = (ImageView)findViewById(R.id.imgv_send_p2p);
+        // recentListLayout = (LinearLayout) findViewById(R.id.layout_recent_list);
+        contactPic = (de.hdodenhof.circleimageview.CircleImageView)findViewById(R.id.select_profile_image);
+        sendMoney = (ImageView)findViewById(R.id.imgv_send_money);
+        imgvSendP2P = (ImageView)findViewById(R.id.imgv_send_p2p);
         rlSendMoneyLayoutF = (RelativeLayout) findViewById(R.id.layout_p2p_amount_final);
         edtAmount = (EditText)findViewById(R.id.edt_amount);
         edtPin = (EditText)findViewById(R.id.edt_pin);
-         imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-          myTask = new MyTimerTask();
-         myTimer = new Timer();
-
+        imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
 
         userNumber = getValueFromSharedPreferences("user_number",P2PActivity.this);
         sPinNumber = getValueFromSharedPreferences("pin_number",P2PActivity.this);
 
-
-
         utillDB = new UtillDB(P2PActivity.this);
         utillDB.open();
-
 
         contactList = new ArrayList<>();
         recentList = new ArrayList<>();
@@ -279,7 +253,7 @@ public class P2PActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-               // recentListLayout.setVisibility(View.GONE);
+                // recentListLayout.setVisibility(View.GONE);
                 //rlLayoutAllContacts.setVisibility(View.GONE);
                 String text = edtSearchInfo.getText().toString();
                 contactsDB.open();
@@ -327,7 +301,7 @@ public class P2PActivity extends AppCompatActivity {
         sendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                   selectedAmount.setVisibility(View.VISIBLE);
+                selectedAmount.setVisibility(View.VISIBLE);
                 rlSendMoneyLayoutF.setVisibility(View.VISIBLE);
                 checkLayout = true;
                 //Hide auto keyboard:
@@ -358,7 +332,6 @@ public class P2PActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public void getContacts() {
@@ -495,13 +468,6 @@ public class P2PActivity extends AppCompatActivity {
                     birthdayCur.close();
                 }
 
-
-
-
-
-
-
-
                 // Add the contact to the ArrayList
                 String phNumber = getMeMyNumber(phoneNumber);
                 // contactList.add(new ContactModel(name,phNumber,photo));
@@ -521,7 +487,6 @@ public class P2PActivity extends AppCompatActivity {
                     // orderAlphabetically(contactList);
                     contactsDB.open();
                     contactList = contactsDB.getInputData();
-
 
                     adapter = new ContactsAdapter(contactList, P2PActivity.this);
                     lvAllContacts.setAdapter(adapter);
@@ -573,54 +538,6 @@ public class P2PActivity extends AppCompatActivity {
         return out;
 
     }
-
-//    public static void orderAlphabetically(final ArrayList<ContactModel> list) {
-//        Collections.sort(list, new Comparator<ContactModel>() {
-//            public int compare(ContactModel s1, ContactModel s2) {
-//                String i1 = s1.getUserName();
-//                String i2 = s2.getUserName();
-//                // return i1.compareTo(i2);
-//                return i1.compareTo(i2);
-//            }
-//        });
-//
-//    }
-
-//    public String LastCall() {
-//        StringBuffer sb = new StringBuffer();
-//        String str = "";
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (checkSelfPermission(Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(P2PActivity.this, new String[]{Manifest.permission.READ_CALL_LOG}, REQUEST_READ_CALL_LOG);
-//            }
-//
-//            if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-//                    Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-//
-//                ActivityCompat.requestPermissions(P2PActivity.this,
-//                        new String[]{Manifest.permission.READ_CALL_LOG}, REQUEST_READ_CALL_LOG);
-//
-//            } else {
-//                Cursor cur = getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, android.provider.CallLog.Calls.DATE + " DESC");
-//
-//                int number = cur.getColumnIndex( CallLog.Calls.NUMBER );
-//                int duration = cur.getColumnIndex( CallLog.Calls.DURATION);
-//                sb.append("Call Details : \n");
-//                while ( cur.moveToNext() ) {
-//                    String phNumber = cur.getString( number );
-//                    String callDuration = cur.getString( duration );
-//                    sb.append( "\nPhone Number:"+phNumber);
-//                    break;
-//                }
-//                cur.close();
-//                str=sb.toString();
-//
-//            }
-//
-//
-//        }
-//        return str;
-//    }
 
     public void getRecentContacts(){
         //Map contactMap = new HashMap();
@@ -713,9 +630,9 @@ public class P2PActivity extends AppCompatActivity {
                     saveToSharedPreferences("amount",amount,P2PActivity.this);
                     sendingNumber = txvNumber.getText().toString();
 
-                    SendMoneyTask sendMoneyTask = new SendMoneyTask("TRUSTMM PAY "+
+                    P2PTask p2PTask = new P2PTask("TRUSTMM PAY "+
                             " "+sendingNumber+" "+amount+" "+pinNumber,userNumber);
-                    sendMoneyTask.execute();
+                    p2PTask.execute();
                 }
             });
 
@@ -734,14 +651,14 @@ public class P2PActivity extends AppCompatActivity {
         }
     }
 
-    public class SendMoneyTask extends AsyncTask<String, Integer, String> {
+    public class P2PTask extends AsyncTask<String, Integer, String> {
         String mMSG;
         String mGSM;
         // private Dialog loadingDialog;
-        public SendMoneyTask (String msg,String gsm){
+        public P2PTask (String msg,String gsm){
             mMSG = msg;
             mGSM = gsm;
-            sendMoneyAPI = ConstantAPI.sendMoneyAPI;
+            p2pAPI = ConstantAPI.p2pAPI + mGSM + "&smstext="+ mMSG + "&telcoid=7&shortCode=03590016201&encKey=122212";
         }
 
         @Override
@@ -758,63 +675,43 @@ public class P2PActivity extends AppCompatActivity {
 
             try {
 
-                JSONObject json = new JSONObject();
-                json.put("msg",mMSG);
-                json.put("gsm",mGSM);
-
-
-                RequestBody requestBody = RequestBody.create(JSON, String.valueOf(json));
-//                RequestBody requestBody = new FormBody.Builder()
-//
-//                        .add("from",mFromSender)
-//                        .add("to",mToRecipients)
-//                        .add("text",mContentMsg)
-//                        .build();
-
-
                 Request request = new Request.Builder()
-                        .url(sendMoneyAPI)
-                        .post(requestBody)
+                        .url(p2pAPI)
+
                         .build();
 
-
                 Response response = null;
+
                 //client.setRetryOnConnectionFailure(true);
                 response = client.newCall(request).execute();
                 if (response.isSuccessful()){
                     final String result = response.body().string();
-                    // Log.d(RESPONSE_LOG,result);
 
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                        String trxID = jsonObject.getString("id");
+                            //utillDB.saveAllTransaction(sendingNumber,amount,trxID,status);
 
-                        respReqAPI = ConstantAPI.reqTrxID + trxID;
-
-                        if(trxID.length()>0){
-                            utillDB.saveAllTransaction(sendingNumber,amount,trxID,status);
-//                            SendRequest sendRequest = new SendRequest();
-//                            sendRequest.execute();
 
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    myTimer.schedule(myTask, 10000, 1500);
+                                    if(result.length()>0){
+                                        sendProgress.setVisibility(View.GONE);
+                                        txvSuccess.setVisibility(View.VISIBLE);
+                                        txvBackToHome.setVisibility(View.VISIBLE);
+                                        openDialog(result);
+                                    }
+
                                 }
                             });
-                        }
 
 
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+
+
 
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
+
             }
             return null;
         }
@@ -823,91 +720,12 @@ public class P2PActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            sendProgress.setVisibility(View.GONE);
-            txvSuccess.setVisibility(View.VISIBLE);
-            txvBackToHome.setVisibility(View.VISIBLE);
+
         }
 
 
     }
 
-    public class SendRequest extends AsyncTask<String, Integer, String> {
-
-
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            OkHttpClient client = new OkHttpClient();
-
-            try {
-
-
-                Request request = new Request.Builder()
-                        .url(respReqAPI)
-
-                        .build();
-
-
-                Response response = null;
-
-
-
-
-                //client.setRetryOnConnectionFailure(true);
-                response = client.newCall(request).execute();
-                if (response.isSuccessful()){
-                    final String result = response.body().string();
-                    // Log.d(RESPONSE_LOG,result);
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(result);
-                         reqLastRes = jsonObject.getString("resp");
-
-                        if(reqLastRes.length()>0){
-                           // utillDB.saveAllTransaction(sendingNumber,amount,trxID,status);
-                            myTimer.cancel();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sendProgress.setVisibility(View.GONE);
-                                    openDialog(reqLastRes);
-                                }
-                            });
-                        }
-
-
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-            sendProgress.setVisibility(View.VISIBLE);
-            txvSuccess.setVisibility(View.VISIBLE);
-            txvBackToHome.setVisibility(View.VISIBLE);
-        }
-
-
-    }
 
 
     @Override
@@ -952,10 +770,5 @@ public class P2PActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    class MyTimerTask extends TimerTask {
-        public void run() {
-            SendRequest sendRequest = new SendRequest();
-            sendRequest.execute();
-        }
-    }
+
 }
